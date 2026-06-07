@@ -24,6 +24,20 @@ import {
 } from "@/lib/api/addresses"
 import type { Address, AddressFormParams } from "@/types/address"
 
+async function fetchAddressData(
+  setAddresses: (v: Address[]) => void,
+  setLoading: (v: boolean) => void,
+) {
+  try {
+    const res = await getAddressListApi()
+    if (res.code === 0 && res.data) {
+      setAddresses(res.data)
+    }
+  } finally {
+    setLoading(false)
+  }
+}
+
 export default function AddressPage() {
   const router = useRouter()
   const isLogin = useAuthStore((s) => s.isLogin)
@@ -33,16 +47,10 @@ export default function AddressPage() {
   const [editingAddress, setEditingAddress] = useState<Address | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<Address | null>(null)
 
-  const reloadAddresses = useCallback(async () => {
-    try {
-      const res = await getAddressListApi()
-      if (res.code === 0 && res.data) {
-        setAddresses(res.data)
-      }
-    } finally {
-      setLoading(false)
-    }
-  }, [])
+  const doFetch = useCallback(
+    () => fetchAddressData(setAddresses, setLoading),
+    [],
+  )
 
   useEffect(() => {
     if (!isLogin()) {
@@ -50,16 +58,12 @@ export default function AddressPage() {
       return
     }
     let cancelled = false
-    setLoading(true)
-    getAddressListApi()
-      .then((res) => {
-        if (!cancelled && res.code === 0 && res.data) {
-          setAddresses(res.data)
-        }
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false)
-      })
+    getAddressListApi().then((res) => {
+      if (!cancelled && res.code === 0 && res.data) {
+        setAddresses(res.data)
+      }
+      if (!cancelled) setLoading(false)
+    })
     return () => {
       cancelled = true
     }
@@ -72,7 +76,7 @@ export default function AddressPage() {
       setDialogOpen(false)
       setEditingAddress(null)
       setLoading(true)
-      await reloadAddresses()
+      await doFetch()
     } catch {
       toast.error("添加地址失败")
     }
@@ -85,7 +89,7 @@ export default function AddressPage() {
       setDialogOpen(false)
       setEditingAddress(null)
       setLoading(true)
-      await reloadAddresses()
+      await doFetch()
     } catch {
       toast.error("更新地址失败")
     }
@@ -98,7 +102,7 @@ export default function AddressPage() {
       toast.success("地址已删除")
       setDeleteTarget(null)
       setLoading(true)
-      await reloadAddresses()
+      await doFetch()
     } catch {
       toast.error("删除地址失败")
     }
@@ -109,7 +113,7 @@ export default function AddressPage() {
       await updateAddressApi({ ...address, isDefault: true })
       toast.success("已设为默认地址")
       setLoading(true)
-      await reloadAddresses()
+      await doFetch()
     } catch {
       toast.error("设置失败")
     }

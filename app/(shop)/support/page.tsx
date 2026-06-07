@@ -234,8 +234,8 @@ export default function SupportPage() {
               <Label className="text-stone-700">咨询分类</Label>
               <Select
                 value={form.category}
-                onValueChange={(value: string) =>
-                  setForm((prev) => ({ ...prev, category: value }))
+                onValueChange={(value) =>
+                  setForm((prev) => ({ ...prev, category: value ?? "" }))
                 }
               >
                 <SelectTrigger className="w-full border-stone-200">

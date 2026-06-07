@@ -27,18 +27,19 @@ export default function FavoritesPage() {
       </div>
 
       {favorites.length === 0 ? (
-        <EmptyState
-          icon={<Heart className="h-12 w-12" />}
-          title="暂无收藏"
-          description="去发现心仪的茶叶吧"
-        >
-          <Link href="/products" className="mt-4">
+        <div className="flex flex-col items-center">
+          <EmptyState
+            icon={<Heart className="h-12 w-12" />}
+            title="暂无收藏"
+            description="去发现心仪的茶叶吧"
+          />
+          <Link href="/products">
             <Button>
               <ShoppingBag className="mr-2 h-4 w-4" />
               去逛逛
             </Button>
           </Link>
-        </EmptyState>
+        </div>
       ) : (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           <AnimatePresence mode="popLayout">

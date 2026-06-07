@@ -11,13 +11,6 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog"
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select"
 import { EmptyState } from "@/components/shared/empty-state"
 import { getFeedbackListApi, updateFeedbackStatusApi } from "@/lib/api/admin"
 import { toast } from "sonner"

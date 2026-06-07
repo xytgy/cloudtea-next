@@ -3,7 +3,20 @@
 import Link from "next/link"
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { ShoppingCart, Menu, User, Package, LogOut } from "lucide-react"
+import {
+  ShoppingCart,
+  Menu,
+  User,
+  Package,
+  LogOut,
+  Heart,
+  Headphones,
+  Store,
+  ShoppingBag,
+  MessageSquare,
+  Users,
+  ClipboardCheck,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -26,14 +39,15 @@ import { MobileNav } from "./mobile-nav"
 
 const navLinks = [
   { label: "首页", href: "/products" },
-  { label: "茶友圈", href: "#" },
-  { label: "关于我们", href: "#" },
+  { label: "茶友圈", href: "/tea-circle" },
+  { label: "关于我们", href: "/about" },
 ]
 
 export function Header() {
   const [open, setOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const isLogin = useAuthStore((s) => s.isLogin())
+  const userInfo = useAuthStore((s) => s.userInfo)
   const totalCount = useCartStore((s) => s.totalCount())
   const { logout } = useAuth()
 
@@ -82,10 +96,10 @@ export function Header() {
                   <Button variant="ghost" size="icon" className="rounded-full" />
                 }
               >
-                {useAuthStore.getState().userInfo?.avatar ? (
+                {userInfo?.avatar ? (
                   <img
-                    src={useAuthStore.getState().userInfo!.avatar!}
-                    alt={useAuthStore.getState().userInfo?.nickname}
+                    src={userInfo.avatar}
+                    alt={userInfo.nickname}
                     className="size-8 rounded-full object-cover"
                   />
                 ) : (
@@ -97,7 +111,7 @@ export function Header() {
               <DropdownMenuContent align="end" sideOffset={8}>
                 <div className="px-2 py-1.5">
                   <p className="text-sm font-medium text-stone-900">
-                    {useAuthStore.getState().userInfo?.nickname || useAuthStore.getState().userInfo?.username}
+                    {userInfo?.nickname || userInfo?.username}
                   </p>
                 </div>
                 <DropdownMenuSeparator />
@@ -109,7 +123,89 @@ export function Header() {
                   <Package className="size-4" />
                   我的订单
                 </DropdownMenuItem>
+                <DropdownMenuItem
+                  render={
+                    <Link href="/me" className="flex items-center gap-2" />
+                  }
+                >
+                  <User className="size-4" />
+                  个人中心
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  render={
+                    <Link href="/favorites" className="flex items-center gap-2" />
+                  }
+                >
+                  <Heart className="size-4" />
+                  我的收藏
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  render={
+                    <Link href="/support" className="flex items-center gap-2" />
+                  }
+                >
+                  <Headphones className="size-4" />
+                  我的咨询
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
+                {userInfo?.role === 1 && (
+                  <>
+                    <DropdownMenuItem
+                      render={
+                        <Link href="/merchant/goods" className="flex items-center gap-2" />
+                      }
+                    >
+                      <Store className="size-4" />
+                      商品管理
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      render={
+                        <Link href="/merchant/orders" className="flex items-center gap-2" />
+                      }
+                    >
+                      <ShoppingBag className="size-4" />
+                      订单管理
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      render={
+                        <Link href="/merchant/chat" className="flex items-center gap-2" />
+                      }
+                    >
+                      <MessageSquare className="size-4" />
+                      消息中心
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                  </>
+                )}
+                {userInfo?.role === 2 && (
+                  <>
+                    <DropdownMenuItem
+                      render={
+                        <Link href="/admin/users" className="flex items-center gap-2" />
+                      }
+                    >
+                      <Users className="size-4" />
+                      用户管理
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      render={
+                        <Link href="/admin/audit" className="flex items-center gap-2" />
+                      }
+                    >
+                      <ClipboardCheck className="size-4" />
+                      商品审核
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      render={
+                        <Link href="/admin/feedback" className="flex items-center gap-2" />
+                      }
+                    >
+                      <MessageSquare className="size-4" />
+                      反馈管理
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                  </>
+                )}
                 <DropdownMenuItem
                   variant="destructive"
                   onClick={logout}

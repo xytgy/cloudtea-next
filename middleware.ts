@@ -1,6 +1,26 @@
 import { NextRequest, NextResponse } from "next/server"
 
-const protectedRoutes = ["/cart", "/checkout", "/payment", "/orders"]
+const protectedRoutes = [
+  "/cart",
+  "/checkout",
+  "/payment",
+  "/orders",
+  "/me",
+  "/profile",
+  "/favorites",
+  "/address",
+  "/support",
+  "/feedback",
+  "/tea-circle/post",
+  "/merchant/register",
+  "/merchant/shop",
+  "/merchant/goods",
+  "/merchant/orders",
+  "/merchant/chat",
+  "/admin/users",
+  "/admin/audit",
+  "/admin/feedback",
+]
 
 function isProtectedRoute(pathname: string): boolean {
   return protectedRoutes.some((route) => pathname.startsWith(route))

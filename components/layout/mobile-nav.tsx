@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Package, LogOut } from "lucide-react"
+import { Package, LogOut, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
@@ -20,8 +20,8 @@ interface MobileNavProps {
 
 const navLinks = [
   { label: "首页", href: "/" },
-  { label: "茶友圈", href: "#" },
-  { label: "关于我们", href: "#" },
+  { label: "茶友圈", href: "/tea-circle" },
+  { label: "关于我们", href: "/about" },
 ]
 
 export function MobileNav({ open, onOpenChange }: MobileNavProps) {
@@ -56,6 +56,14 @@ export function MobileNav({ open, onOpenChange }: MobileNavProps) {
               >
                 <Package className="size-4" />
                 我的订单
+              </Link>
+              <Link
+                href="/me"
+                onClick={() => onOpenChange(false)}
+                className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 hover:bg-stone-100"
+              >
+                <User className="size-4" />
+                个人中心
               </Link>
               <button
                 onClick={() => {
