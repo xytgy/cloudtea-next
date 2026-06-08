@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import {
   ShoppingCart,
   Menu,
@@ -46,6 +46,7 @@ const navLinks = [
 export function Header() {
   const [open, setOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const isLogin = useAuthStore((s) => s.isLogin())
   const userInfo = useAuthStore((s) => s.userInfo)
   const totalCount = useCartStore((s) => s.totalCount())
@@ -53,38 +54,63 @@ export function Header() {
 
   useEffect(() => {
     setMounted(true)
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10)
+    }
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
   return (
-    <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-md">
-      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/products" className="text-lg font-bold text-stone-900">
-          云栖茗茶
+    <header
+      className={`sticky top-0 z-50 border-b transition-all duration-300 ${
+        scrolled
+          ? "bg-white/95 backdrop-blur-md shadow-sm"
+          : "bg-white/80 backdrop-blur-md"
+      }`}
+    >
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <Link href="/products" className="group flex items-center gap-2">
+          <span className="text-xl font-bold tracking-tight text-primary transition-colors group-hover:text-primary/80">
+            云栖茗茶
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
           {navLinks.map((link) => (
-            <motion.div key={link.label} whileHover={{ y: -1 }}>
-              <Link
-                href={link.href}
-                className="rounded-lg px-3 py-2 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900"
-              >
-                {link.label}
-              </Link>
-            </motion.div>
+            <Link
+              key={link.label}
+              href={link.href}
+              className="relative rounded-lg px-4 py-2 text-sm font-medium text-foreground/70 transition-colors hover:text-foreground"
+            >
+              <span className="relative z-10">{link.label}</span>
+              <motion.div
+                className="absolute inset-0 rounded-lg bg-primary/5"
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileHover={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.2 }}
+              />
+            </Link>
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Link href="/cart">
-              <Button variant="ghost" size="icon" className="relative">
-                <ShoppingCart className="size-5 text-stone-700" />
-                {mounted && totalCount > 0 && (
-                  <span className="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-stone-900 text-[10px] font-medium text-white">
-                    {totalCount > 99 ? "99+" : totalCount}
-                  </span>
-                )}
+              <Button variant="ghost" size="icon" className="relative rounded-full">
+                <ShoppingCart className="size-5 text-foreground/70" />
+                <AnimatePresence>
+                  {mounted && totalCount > 0 && (
+                    <motion.span
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                      className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow-sm"
+                    >
+                      {totalCount > 99 ? "99+" : totalCount}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
               </Button>
             </Link>
           </motion.div>
@@ -100,18 +126,21 @@ export function Header() {
                   <img
                     src={userInfo.avatar}
                     alt={userInfo.nickname}
-                    className="size-8 rounded-full object-cover"
+                    className="size-9 rounded-full object-cover ring-2 ring-transparent transition-all hover:ring-primary/30"
                   />
                 ) : (
-                  <div className="flex size-8 items-center justify-center rounded-full bg-stone-200">
-                    <User className="size-4 text-stone-600" />
+                  <div className="flex size-9 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors hover:bg-primary/20">
+                    <User className="size-4" />
                   </div>
                 )}
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" sideOffset={8}>
-                <div className="px-2 py-1.5">
-                  <p className="text-sm font-medium text-stone-900">
+                <div className="px-3 py-2">
+                  <p className="text-sm font-semibold text-foreground">
                     {userInfo?.nickname || userInfo?.username}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    欢迎回来
                   </p>
                 </div>
                 <DropdownMenuSeparator />
@@ -221,7 +250,7 @@ export function Header() {
                 <Button
                   variant="default"
                   size="sm"
-                  className="bg-stone-900 text-white hover:bg-stone-800"
+                  className="rounded-full px-5"
                 >
                   登录
                 </Button>

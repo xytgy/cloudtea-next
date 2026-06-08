@@ -53,7 +53,7 @@ export default function MePage() {
   }
 
   return (
-    <div className="container mx-auto max-w-2xl px-4 py-6">
+    <div className="container mx-auto max-w-2xl px-4 py-8">
       <input
         ref={fileInputRef}
         type="file"
@@ -63,39 +63,41 @@ export default function MePage() {
       />
 
       <motion.div
-        initial={{ opacity: 0, y: 12 }}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
       >
-        <Card className="mb-4 overflow-hidden">
-          <div className="h-24 bg-gradient-to-r from-stone-200 to-stone-100" />
+        <Card className="mb-6 overflow-hidden shadow-sm">
+          <div className="h-28 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/5" />
           <CardContent className="relative px-6 pb-6">
-            <button
+            <motion.button
               onClick={handleAvatarClick}
-              className="-mt-10 relative block overflow-hidden rounded-full border-4 border-background ring-2 ring-stone-200 transition-transform hover:scale-105"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="-mt-12 relative block overflow-hidden rounded-full border-4 border-background ring-2 ring-primary/20 transition-all duration-200 hover:ring-primary/40"
             >
               <img
                 src={profile.avatar}
                 alt={profile.nickname}
-                className="h-20 w-20 object-cover"
+                className="h-24 w-24 object-cover"
               />
               <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 transition-opacity hover:opacity-100">
                 <Camera className="h-5 w-5 text-white" />
               </div>
-            </button>
+            </motion.button>
 
-            <div className="mt-3 flex items-start justify-between">
+            <div className="mt-4 flex items-start justify-between">
               <div>
-                <h1 className="text-xl font-bold text-stone-800">
+                <h1 className="text-2xl font-bold tracking-tight text-foreground">
                   {userInfo?.nickname || profile.nickname}
                 </h1>
-                <p className="mt-1 text-sm text-stone-500">
+                <p className="mt-1 text-sm text-muted-foreground">
                   {profile.signature}
                 </p>
               </div>
               <Link href="/profile/edit">
-                <Button variant="ghost" size="sm" className="text-stone-500">
-                  <Edit3 className="mr-1 h-4 w-4" />
+                <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+                  <Edit3 className="mr-1.5 h-4 w-4" />
                   编辑资料
                 </Button>
               </Link>
@@ -103,46 +105,78 @@ export default function MePage() {
           </CardContent>
         </Card>
 
-        <Card className="mb-4">
-          <CardContent className="grid grid-cols-3 divide-x divide-stone-100 p-0">
-            {[
-              { label: "订单", value: profile.stats.orders },
-              { label: "收藏", value: profile.stats.favorites },
-              { label: "咨询", value: profile.stats.consultations },
-            ].map((stat) => (
-              <div key={stat.label} className="flex flex-col items-center py-5">
-                <span className="text-2xl font-bold text-stone-800">
-                  {stat.value}
-                </span>
-                <span className="mt-1 text-xs text-stone-500">{stat.label}</span>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          <Card className="mb-6 shadow-sm">
+            <CardContent className="grid grid-cols-3 divide-x divide-border p-0">
+              {[
+                { label: "订单", value: profile.stats.orders },
+                { label: "收藏", value: profile.stats.favorites },
+                { label: "咨询", value: profile.stats.consultations },
+              ].map((stat, i) => (
+                <motion.div
+                  key={stat.label}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 + i * 0.05 }}
+                  className="flex flex-col items-center py-6"
+                >
+                  <span className="text-3xl font-bold text-foreground">
+                    {stat.value}
+                  </span>
+                  <span className="mt-1.5 text-xs text-muted-foreground">{stat.label}</span>
+                </motion.div>
+              ))}
+            </CardContent>
+          </Card>
+        </motion.div>
 
-        <Card>
-          <CardContent className="divide-y divide-stone-100 p-0">
-            {quickLinks.map((link) => (
-              <Link key={link.href} href={link.href}>
-                <div className="flex items-center justify-between px-5 py-4 transition-colors hover:bg-stone-50">
-                  <div className="flex items-center gap-3">
-                    <link.icon className="h-5 w-5 text-stone-400" />
-                    <span className="text-sm font-medium text-stone-700">
-                      {link.label}
-                    </span>
-                  </div>
-                  <ChevronRight className="h-4 w-4 text-stone-300" />
-                </div>
-              </Link>
-            ))}
-          </CardContent>
-        </Card>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <Card className="shadow-sm">
+            <CardContent className="divide-y divide-border p-0">
+              {quickLinks.map((link, i) => (
+                <motion.div
+                  key={link.href}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 + i * 0.05 }}
+                >
+                  <Link href={link.href}>
+                    <div className="flex items-center justify-between px-5 py-4 transition-colors hover:bg-muted/50">
+                      <div className="flex items-center gap-3">
+                        <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                          <link.icon className="h-4 w-4" />
+                        </div>
+                        <span className="text-sm font-medium text-foreground">
+                          {link.label}
+                        </span>
+                      </div>
+                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </CardContent>
+          </Card>
+        </motion.div>
 
-        <Separator className="my-6" />
+        <Separator className="my-8" />
 
-        <div className="text-center text-xs text-stone-400">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="text-center text-xs text-muted-foreground"
+        >
           CloudTea · 品味生活
-        </div>
+        </motion.div>
       </motion.div>
     </div>
   )

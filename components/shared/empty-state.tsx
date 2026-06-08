@@ -1,6 +1,7 @@
 "use client"
 
 import { PackageOpen } from "lucide-react"
+import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 
 interface EmptyStateProps {
@@ -17,19 +18,41 @@ export function EmptyState({
   className,
 }: EmptyStateProps) {
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
       className={cn(
-        "flex flex-col items-center justify-center py-12 text-center",
+        "flex flex-col items-center justify-center py-16 text-center",
         className
       )}
     >
-      <div className="mb-4 text-muted-foreground">
-        {icon || <PackageOpen className="h-12 w-12" />}
-      </div>
-      <h3 className="mb-1 text-lg font-medium">{title}</h3>
+      <motion.div
+        initial={{ scale: 0.8 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 0.5, delay: 0.1, type: "spring", stiffness: 200 }}
+        className="mb-6 flex size-20 items-center justify-center rounded-full bg-muted/50 text-muted-foreground"
+      >
+        {icon || <PackageOpen className="h-10 w-10" />}
+      </motion.div>
+      <motion.h3
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3, delay: 0.2 }}
+        className="mb-2 text-lg font-semibold text-foreground"
+      >
+        {title}
+      </motion.h3>
       {description && (
-        <p className="text-sm text-muted-foreground">{description}</p>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, delay: 0.3 }}
+          className="text-sm text-muted-foreground"
+        >
+          {description}
+        </motion.p>
       )}
-    </div>
+    </motion.div>
   )
 }

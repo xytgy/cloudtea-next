@@ -16,26 +16,32 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   return (
     <motion.div
-      whileHover={{ y: -2 }}
-      transition={{ duration: 0.2 }}
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
       className="h-full"
     >
-      <Link href={`/products/${product.id}`} className="block h-full">
-        <Card className="h-full overflow-hidden transition-shadow hover:shadow-md">
-          <div className="relative aspect-square overflow-hidden">
+      <Link href={`/products/${product.id}`} className="group block h-full">
+        <Card className="h-full overflow-hidden transition-all duration-300 hover:shadow-lg">
+          <div className="relative aspect-square overflow-hidden bg-muted/30">
             <ImageWithFallback
               src={product.image}
               alt={product.name}
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
-              className="transition-transform duration-300 hover:scale-105"
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           </div>
-          <CardContent className="flex-1 p-3">
-            <h3 className="mb-1 truncate text-sm font-medium">
-              {product.name}
-            </h3>
-            <Badge variant="secondary" className="mb-2 text-xs">
+          <CardContent className="flex-1 p-4">
+            <div className="mb-2 flex items-start justify-between gap-2">
+              <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-foreground transition-colors group-hover:text-primary">
+                {product.name}
+              </h3>
+            </div>
+            <Badge
+              variant="secondary"
+              className="mb-3 border-0 bg-primary/10 text-xs font-medium text-primary"
+            >
               {product.category}
             </Badge>
             <PriceDisplay
@@ -45,7 +51,7 @@ export function ProductCard({ product }: ProductCardProps) {
             />
           </CardContent>
           <CardFooter
-            className="p-3 pt-0"
+            className="p-4 pt-0"
             onClick={(e) => {
               e.preventDefault()
               e.stopPropagation()
